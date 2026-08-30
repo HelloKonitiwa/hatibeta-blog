@@ -4,8 +4,13 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkAlerts from './src/plugins/remark-alerts.mjs';
 
-const base = process.env.BASE_PATH || '/';
-const site = process.env.SITE_URL || 'https://example.com';
+const site =
+  process.env.SITE_URL ||
+  'https://HelloKonitiwa.github.io';
+
+const base =
+  process.env.BASE_PATH ||
+  '/';
 
 export default defineConfig({
   site,
@@ -17,7 +22,10 @@ export default defineConfig({
     remarkPlugins: [remarkMath, remarkAlerts],
     rehypePlugins: [rehypeKatex],
     shikiConfig: {
-      themes: { light: 'github-light', dark: 'github-dark' },
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
       defaultColor: false,
       wrap: true,
     },
