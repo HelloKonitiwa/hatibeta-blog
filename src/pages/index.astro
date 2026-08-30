@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostList from '../components/PostList.astro';
+import { isVisible, sortPosts } from '../utils/blog';
+
+const posts = sortPosts((await getCollection('blog')).filter(isVisible));
+---
+
+<BaseLayout>
+  <PostList posts={posts} />
+</BaseLayout>

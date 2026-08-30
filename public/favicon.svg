@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    .egg {
+      fill: #fbfbf6;
+      stroke: #222129;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .egg {
+        fill: #fbfbf6;
+        stroke: #fbfbf6;
+      }
+    }
+  </style>
+
+  <path
+    class="egg"
+    d="M32 5C22.5 5 13 25.2 13 40.1C13 52.3 21.2 59 32 59s19-6.7 19-18.9C51 25.2 41.5 5 32 5Z"
+    stroke-width="3.5"
+    stroke-linejoin="round"
+  />
+</svg>

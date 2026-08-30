@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { tagEntries } from '../../data/tags';
+import { isVisible } from '../../utils/blog';
+import { withBase } from '../../utils/paths';
+
+const posts = (await getCollection('blog')).filter(isVisible);
+const tags = tagEntries
+  .map((tag) => ({ ...tag, count: posts.filter((post) => post.data.tags.includes(tag.name)).length }))
+  .filter((tag) => tag.count > 0)
+  .sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+---
+
+<BaseLayout title="Tags">
+  <section class="section-heading">
+ <!-- <p class="eyebrow">TAGS</p>-->   
+    <h1>タグ一覧</h1>
+  </section>
+  <ul class="tag-index">
+    {tags.map((tag) => (
+      <li><a href={withBase(`tags/${tag.slug}/`)}><span>#{tag.name}</span><span>{tag.count}</span></a></li>
+    ))}
+  </ul>
+</BaseLayout>

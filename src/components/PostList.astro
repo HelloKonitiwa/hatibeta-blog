@@ -1,0 +1,32 @@
+---
+import type { Post } from '../utils/blog';
+import { formatDate, postSlug } from '../utils/blog';
+import { tagSlug } from '../data/tags';
+import { withBase } from '../utils/paths';
+
+interface Props { posts: Post[]; emptyMessage?: string }
+const { posts, emptyMessage = '記事はまだありません。' } = Astro.props;
+---
+
+{posts.length ? (
+  <ol class="post-list">
+    {posts.map((post) => (
+      <li>
+        <div class="post-row">
+          <a class="post-title" href={withBase(`posts/${postSlug(post)}/`)}>{post.data.title}</a>
+          <div class="post-meta">
+
+         　<!--
+         　 公開日時は大体タイトルに入れるので非表示
+           <span aria-hidden="true">/</span>
+        　  -->
+        
+            <ul class="tag-list" aria-label="タグ">
+              {post.data.tags.map((tag) => <li><a href={withBase(`tags/${tagSlug(tag)}/`)}>#{tag}</a></li>)}
+            </ul>
+          </div>
+        </div>
+      </li>
+    ))}
+  </ol>
+) : <p class="empty-message">{emptyMessage}</p>}

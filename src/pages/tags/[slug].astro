@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { tagEntries } from '../../data/tags';
+import { isVisible, sortPosts } from '../../utils/blog';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('blog')).filter(isVisible);
+  return tagEntries.map((tag) => ({
+    params: { slug: tag.slug },
+    props: { tag, posts: sortPosts(all.filter((post) => post.data.tags.includes(tag.name))) },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`#${tag.name}`}>
+  <section class="section-heading">
+    <p class="eyebrow">TAG / {tag.slug.toUpperCase()}</p>
+    <h1>#{tag.name}</h1>
+  </section>
+  <PostList posts={posts} emptyMessage="このタグの記事はまだありません。" />
+</BaseLayout>

@@ -1,0 +1,22 @@
+<button class="icon-button theme-toggle" type="button" aria-label="配色を切り替える" title="配色を切り替える">
+  <span class="theme-icon" aria-hidden="true">◐</span>
+</button>
+
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const button = document.querySelector('.theme-toggle');
+    const saved = localStorage.getItem('theme');
+    const preferred = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const apply = (theme) => {
+      root.dataset.theme = theme;
+      button?.setAttribute('aria-label', `${theme === 'dark' ? 'ライト' : 'ダーク'}モードに切り替える`);
+    };
+    apply(saved || preferred);
+    button?.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      apply(next);
+    });
+  })();
+</script>

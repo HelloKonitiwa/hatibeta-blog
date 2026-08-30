@@ -1,0 +1,40 @@
+---
+import Header from '../components/Header.astro';
+import '../styles/global.css';
+import 'katex/dist/katex.min.css';
+
+interface Props { title?: string; description?: string }
+const { title, description = '気が向いたときに書いていきます。' } = Astro.props;
+const siteName = '8`)β';
+const pageTitle = title ? `${title} — ${siteName}` : siteName;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="alternate" type="application/rss+xml" title={siteName} href={`${import.meta.env.BASE_URL}rss.xml`} />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem('theme');
+        document.documentElement.dataset.theme = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">本文へ移動</a>
+    <div class="page-shell">
+      <Header />
+      <main id="content" class="main-frame">
+        <slot />
+      </main>
+      <footer><span>© {new Date().getFullYear()}</span><a href={`${import.meta.env.BASE_URL}rss.xml`}>RSS</a></footer>
+    </div>
+  </body>
+</html>

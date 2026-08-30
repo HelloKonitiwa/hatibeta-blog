@@ -1,0 +1,80 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { descriptionFor, isVisible, postSlug, sortPosts } from '../utils/blog';
+import { withBase } from '../utils/paths';
+
+const posts = sortPosts((await getCollection('blog')).filter(isVisible));
+const searchData = posts.map((post) => ({
+  title: post.data.title,
+  description: descriptionFor(post, 160),
+  tags: post.data.tags,
+  body: post.body,
+  url: withBase(`posts/${postSlug(post)}/`),
+  date: post.data.publishedAt.toISOString(),
+}));
+---
+
+<BaseLayout title="Search">
+  <section class="section-heading search-heading">
+    <!--<p class="eyebrow">SEARCH</p> -->
+    <h1>記事を検索</h1>
+    <form class="search-form" role="search">
+      <label for="search-input">タイトル・タグ・本文から検索</label>
+      <div class="search-field">
+        <input id="search-input" name="q" type="search" autocomplete="off" placeholder="検索語を入力してください。" />
+        <button type="submit">検索</button>
+      </div>
+    </form>
+    <!--<p id="result-count" class="result-count" aria-live="polite">検索語を入力してください。</p> -->
+  </section>
+  <ol id="search-results" class="search-results"></ol>
+  <script is:inline id="search-data" type="application/json" set:html={JSON.stringify(searchData).replace(/</g, '\\u003c')} />
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.search-form');
+  const input = document.querySelector<HTMLInputElement>('#search-input');
+  const results = document.querySelector<HTMLOListElement>('#search-results');
+  const count = document.querySelector<HTMLElement>('#result-count');
+  const source = document.querySelector<HTMLScriptElement>('#search-data');
+  const data = JSON.parse(source?.textContent || '[]');
+
+  function escapeHtml(value: string) {
+    return value.replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char] || char);
+  }
+
+  function runSearch(query: string) {
+    const terms = query.trim().toLocaleLowerCase('ja').split(/\s+/).filter(Boolean);
+    const matched = terms.length ? data.filter((post: any) => {
+      const haystack = `${post.title} ${post.tags.join(' ')} ${post.body}`.toLocaleLowerCase('ja');
+      return terms.every((term) => haystack.includes(term));
+    }) : [];
+    if (count) count.textContent = terms.length ? `${matched.length}件の記事が見つかりました。` : '検索語を入力してください。';
+    if (results) results.innerHTML = matched.map((post: any) => `
+      <li>
+        <a class="post-title" href="${escapeHtml(post.url)}">${escapeHtml(post.title)}</a>
+        <p>${escapeHtml(post.description)}</p>
+        <div class="post-meta">${escapeHtml(new Date(post.date).toLocaleDateString('ja-JP'))} / ${post.tags.map((tag: string) => `#${escapeHtml(tag)}`).join(' ')}</div>
+      </li>`).join('');
+  }
+
+  const initial = new URLSearchParams(location.search).get('q') || '';
+  if (input) input.value = initial;
+  runSearch(initial);
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const query = input?.value || '';
+    history.replaceState(null, '', query ? `?q=${encodeURIComponent(query)}` : location.pathname);
+    runSearch(query);
+  });
+</script>
+
+<!--
+lightモードにおいて，検索ボタンの文字色が背景と同じなので，ここだけ変える
+ -->
+<style>
+  .search-field button {
+    color: var(--bg);
+  }
+</style>
