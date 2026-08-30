@@ -12,7 +12,7 @@ draft: false
 ## 見出しと文章
 これは本文です。  
 これは画像です。
-![テスト画像](../../assets/posts/my-article/test.png)
+![テスト画像](../../assets/posts/welcome/test.png)
 
 > これは引用です。
 区切り線です。  

@@ -43,7 +43,7 @@ draft: true
 画像は `src/assets/posts/<記事slug>/` に置きます。たとえば `article.md` から `src/assets/posts/article/photo.jpg` を使う場合は次のように書く。
 
 ```md
-![画像の説明](../../assets/posts/my-article/photo.jpg)
+![画像の説明](../../assets/posts/article/photo.jpg)
 ```
 
 ローカル画像はAstroの画像処理対象となり、寸法指定や最適化が行われます。
