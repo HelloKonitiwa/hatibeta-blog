@@ -64,4 +64,4 @@ draft: true
 
 - Cloudflare Web Analyticsの計測タグ
 
-公開前に `astro.config.mjs` の仮サイトURLと、必要に応じてサイト名を置き換えてください。
+

@@ -4,7 +4,7 @@ description: 外観と本文組版を確認するためのサンプル記事で�
 publishedAt: 2026-08-30
 tags:
 - 日記
-draft: false
+draft: true
 ---
 
 これは、ブログの外観と機能、本文の読みやすさを確認するための記事です。
@@ -14,7 +14,7 @@ draft: false
 これは画像です。
 ![テスト画像](../../assets/posts/welcome/test.png)
 
-> これは引用です。
+> これは引用です。  
 区切り線です。  
 ---
 
