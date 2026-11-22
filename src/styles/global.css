@@ -35,6 +35,28 @@
   --title-text: #222129;
 }
 
+:root[data-theme='tokyo-light'] {
+  color-scheme: light;
+
+  --bg: #dfe5e9;
+  --text: #343b58;
+  --muted: #6c6e75;
+
+  --line: #78839b;
+  --soft-line: #b4b8c8;
+
+  --code-bg: #dcdfe7;
+  --alert: #dce2ef;
+
+  --title-bg: #0f4b6e;
+  --title-text: #ffffff;
+}
+
+:root[data-theme='tokyo-light'] .prose a {
+  color: #2959aa;
+}
+
+
 :root {
   --header-font:
     "Roboto Mono",
@@ -328,7 +350,7 @@ input {
 .article-header h1 {
   max-width: var(--content-width);
   margin: 0;
-  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-size: clamp(1.3rem, 2.5vw, 1.65rem);
   line-height: 1.4;
   letter-spacing: -.035em;
 }
@@ -389,30 +411,43 @@ input {
   border: 1px solid var(--soft-line);
 }
 
+/* 文中のコード */
 .prose code {
   padding: .15em .35em;
+  border-radius: 4px;
   background: var(--code-bg);
   font: .88em/1.6 ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
+/* コードブロック */
 .prose pre {
   overflow-x: auto;
-  margin: 2rem 0;
-  padding: 20px;
-  border: 1px solid var(--soft-line);
+  margin: 1.8em 0;
+  padding: 18px 20px;
+
+  border: 1px solid color-mix(
+    in srgb,
+    var(--soft-line) 45%,
+    transparent
+  );
+  border-radius: 8px;
+
   background: var(--code-bg) !important;
   line-height: 1.7;
+  tab-size: 4;
 }
 
+/* 文中コード用の余白・背景を解除 */
 .prose pre code {
   padding: 0;
+  border-radius: 0;
   background: transparent;
 }
 
-.astro-code,
-.astro-code span {
-  color: var(--shiki-light);
-  background-color: var(--shiki-light-bg);
+/* 構文強調の背景を透明にして、ブロックの背景色を見せる */
+.prose pre.astro-code,
+.prose pre.astro-code span {
+  background-color: transparent;
 }
 
 :root[data-theme='dark'] .astro-code,
@@ -433,32 +468,84 @@ input {
   border: 1px solid var(--soft-line);
 }
 
+/* コールアウト全体 */
 .markdown-alert {
+  --callout-color: #2959aa;
+
   position: relative;
   margin: 1.8em 0;
-  padding: 1.1em 1.2em 1.1em 3.1em;
-  border: 1px solid var(--line);
-  background: var(--alert);
+  padding: 14px 18px;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: color-mix(
+    in srgb,
+    var(--callout-color) 10%,
+    var(--bg)
+  );
   color: var(--text);
 }
 
+/* 上部のタイトル */
 .markdown-alert::before {
   content: attr(data-alert);
-  position: absolute;
-  top: 1.25em;
-  left: 1em;
-  color: var(--text);
-  font: 700 .65rem/1 ui-monospace, monospace;
-  writing-mode: vertical-rl;
-  letter-spacing: .08em;
+  display: block;
+  position: static;
+
+  margin-bottom: 8px;
+
+  color: var(--callout-color);
+  font-family: inherit;
+  font-size: .95em;
+  font-weight: 700;
+  line-height: 1.5;
+
+  writing-mode: horizontal-tb;
+  letter-spacing: normal;
 }
 
-.markdown-alert > :first-child {
+/* 種類ごとの色 */
+.markdown-alert-note {
+  --callout-color: #2959aa;
+}
+
+.markdown-alert-tip,
+.markdown-alert-important {
+  --callout-color: #287568;
+}
+
+.markdown-alert-warning,
+.markdown-alert-caution {
+  --callout-color: #966012;
+}
+
+/* 暗い背景でもタイトルを読みやすくする */
+:root[data-theme='dark'] .markdown-alert-note {
+  --callout-color: #7aa2f7;
+}
+
+:root[data-theme='dark'] .markdown-alert-tip,
+:root[data-theme='dark'] .markdown-alert-important {
+  --callout-color: #73daca;
+}
+
+:root[data-theme='dark'] .markdown-alert-warning,
+:root[data-theme='dark'] .markdown-alert-caution {
+  --callout-color: #e0af68;
+}
+
+/* 通常本文の大きな段落余白を抑える */
+.prose .markdown-alert > :first-child {
   margin-top: 0;
 }
 
-.markdown-alert > :last-child {
+.prose .markdown-alert > :last-child {
   margin-bottom: 0;
+}
+
+.prose .markdown-alert p {
+  margin: .7em 0;
 }
 
 .search-heading {
@@ -499,9 +586,9 @@ input {
 
 .search-field button {
   padding: 10px 18px;
-  border: 1px solid var(--line);
-  background: var(--line);
-  color: #222129;
+  border: 1px solid var(--title-bg);
+  background: var(--title-bg);
+  color: var(--title-text);
   cursor: pointer;
 }
 

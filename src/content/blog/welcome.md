@@ -39,4 +39,7 @@ console.log(message);
 > [!WARNING]
 > これはWARNINGアラートです。
 
+> [!TIP]
+> これはTIPアラートです。
+
 [^note]: ここに脚注の内容を書きます。

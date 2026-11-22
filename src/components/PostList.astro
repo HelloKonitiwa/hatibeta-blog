@@ -19,11 +19,12 @@ const { posts, emptyMessage = '記事はまだありません。' } = Astro.prop
          　<!--
          　 公開日時は大体タイトルに入れるので非表示
            <span aria-hidden="true">/</span>
-        　  -->
+        　  
         
             <ul class="tag-list" aria-label="タグ">
               {post.data.tags.map((tag) => <li><a href={withBase(`tags/${tagSlug(tag)}/`)}>#{tag}</a></li>)}
             </ul>
+          -->
           </div>
         </div>
       </li>

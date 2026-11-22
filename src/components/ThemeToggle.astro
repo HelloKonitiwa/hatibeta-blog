@@ -1,4 +1,9 @@
-<button class="icon-button theme-toggle" type="button" aria-label="配色を切り替える" title="配色を切り替える">
+<button
+  class="icon-button theme-toggle"
+  type="button"
+  aria-label="配色を切り替える"
+  title="配色を切り替える"
+>
   <span class="theme-icon" aria-hidden="true">◐</span>
 </button>
 
@@ -6,17 +11,53 @@
   (() => {
     const root = document.documentElement;
     const button = document.querySelector('.theme-toggle');
-    const saved = localStorage.getItem('theme');
-    const preferred = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+    // ボタンを押したとき、この順番で切り替える
+    const themes = ['light', 'dark', 'tokyo-light'];
+
+    const labels = {
+      light: 'ライト',
+      dark: 'ダーク',
+      'tokyo-light': 'Tokyo Night Light',
+    };
+
     const apply = (theme) => {
       root.dataset.theme = theme;
-      button?.setAttribute('aria-label', `${theme === 'dark' ? 'ライト' : 'ダーク'}モードに切り替える`);
+
+      const currentIndex = themes.indexOf(theme);
+      const nextIndex = (currentIndex + 1) % themes.length;
+      const nextTheme = themes[nextIndex];
+
+      button?.setAttribute(
+        'aria-label',
+        `現在：${labels[theme]}。${labels[nextTheme]}に切り替える`
+      );
+
+      button?.setAttribute(
+        'title',
+        `${labels[nextTheme]}に切り替える`
+      );
     };
-    apply(saved || preferred);
+
+    // BaseLayoutで設定したテーマを使う
+    const currentTheme = root.dataset.theme;
+
+    apply(
+      themes.includes(currentTheme) ? currentTheme : 'light'
+    );
+
     button?.addEventListener('click', () => {
-      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('theme', next);
-      apply(next);
+      const currentIndex = themes.indexOf(root.dataset.theme);
+      const nextIndex = (currentIndex + 1) % themes.length;
+      const nextTheme = themes[nextIndex];
+
+      apply(nextTheme);
+
+      try {
+        localStorage.setItem('theme', nextTheme);
+      } catch {
+        // 保存できない場合も、表示の切替は利用できる
+      }
     });
   })();
 </script>
