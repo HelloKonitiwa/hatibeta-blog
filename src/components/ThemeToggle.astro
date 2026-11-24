@@ -4,15 +4,46 @@
   aria-label="配色を切り替える"
   title="配色を切り替える"
 >
-  <span class="theme-icon" aria-hidden="true">◐</span>
+  <svg
+    class="theme-drop"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
+    <path
+      d="M12 2.5
+         C10 5.8 5 10.4 5 14.5
+         a7 7 0 0 0 14 0
+         C19 10.4 14 5.8 12 2.5Z"
+    />
+  </svg>
 </button>
+
+<style>
+  /* global.cssのアイコン用スタイルを上書き */
+  .theme-toggle .theme-drop {
+    width: 21px;
+    height: 21px;
+    fill: var(--bg);
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+</style>
 
 <script is:inline>
   (() => {
     const root = document.documentElement;
     const button = document.querySelector('.theme-toggle');
 
-    // ボタンを押したとき、この順番で切り替える
+    if (!button) return;
+
+    // ボタンを押したときの切り替え順
     const themes = ['light', 'dark', 'tokyo-light'];
 
     const labels = {
@@ -21,42 +52,52 @@
       'tokyo-light': 'Tokyo Night Light',
     };
 
+    // 各テーマを表す色
+    const colors = {
+      light: '#f2f2ef',
+      dark: '#ffa86a',
+      'tokyo-light': '#2959aa',
+    };
+
+    const getNextTheme = (theme) => {
+      const currentIndex = themes.indexOf(theme);
+      const nextIndex = (currentIndex + 1) % themes.length;
+
+      return themes[nextIndex];
+    };
+
     const apply = (theme) => {
       root.dataset.theme = theme;
 
-      const currentIndex = themes.indexOf(theme);
-      const nextIndex = (currentIndex + 1) % themes.length;
-      const nextTheme = themes[nextIndex];
+      const nextTheme = getNextTheme(theme);
 
-      button?.setAttribute(
+      button.setAttribute(
         'aria-label',
-        `現在：${labels[theme]}。${labels[nextTheme]}に切り替える`
+        `配色を変更`
       );
 
-      button?.setAttribute(
+      button.setAttribute(
         'title',
-        `${labels[nextTheme]}に切り替える`
+        `配色を変更`
       );
     };
 
-    // BaseLayoutで設定したテーマを使う
+    // BaseLayoutで設定されたテーマを使う
     const currentTheme = root.dataset.theme;
 
     apply(
       themes.includes(currentTheme) ? currentTheme : 'light'
     );
 
-    button?.addEventListener('click', () => {
-      const currentIndex = themes.indexOf(root.dataset.theme);
-      const nextIndex = (currentIndex + 1) % themes.length;
-      const nextTheme = themes[nextIndex];
+    button.addEventListener('click', () => {
+      const nextTheme = getNextTheme(root.dataset.theme);
 
       apply(nextTheme);
 
       try {
         localStorage.setItem('theme', nextTheme);
       } catch {
-        // 保存できない場合も、表示の切替は利用できる
+        // 保存できない場合も、配色の切り替えは利用できる
       }
     });
   })();

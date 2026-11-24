@@ -453,7 +453,6 @@ input {
 :root[data-theme='dark'] .astro-code,
 :root[data-theme='dark'] .astro-code span {
   color: var(--shiki-dark);
-  background-color: var(--shiki-dark-bg);
 }
 
 .prose table {
@@ -622,6 +621,18 @@ footer {
 
 footer a {
   color: inherit;
+}
+
+/* ダークテーマのコードブロック */
+:root[data-theme='dark'] .prose pre {
+  background: #2c2b35 !important;
+  border-color: #494550;
+}
+
+/* コードブロックの基本文字色 */
+:root[data-theme='dark'] .prose pre,
+:root[data-theme='dark'] .prose pre code {
+  color: #dedbe3;
 }
 
 @media (max-width: 640px) {
