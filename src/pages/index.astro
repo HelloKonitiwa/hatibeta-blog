@@ -1,12 +1,13 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PostList from '../components/PostList.astro';
-import { isVisible, sortPosts } from '../utils/blog';
-
-const posts = sortPosts((await getCollection('blog')).filter(isVisible));
 ---
 
 <BaseLayout>
-  <PostList posts={posts} />
+  <section class="simple-page home-intro">
+    <h1>このサイトについて</h1>
+    <p>気が向いたときに書いていきます。</p>
+    <p>「 8`)β 」はニワトリのつもりです。<br />
+      もっとニワトリっぽい顔文字があれば教えてほしいです。
+    </p>
+  </section>
 </BaseLayout>

@@ -1,5 +1,7 @@
 ---
 import Header from '../components/Header.astro';
+import MosaicPond from '../components/MosaicPond.astro';
+import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import 'katex/dist/katex.min.css';
 
@@ -10,47 +12,30 @@ const pageTitle = title ? `${title} — ${siteName}` : siteName;
 ---
 
 <!doctype html>
-<html lang="ja">
+<html lang="ja" data-theme="tokyo-light" transition:animate="none">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="robots" content="noindex, nofollow" />　<!-検索避け-->
+    <meta name="robots" content="noindex, nofollow" /> <!-- 検索避け -->
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="light" />
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
     <link rel="alternate" type="application/rss+xml" title={siteName} href={`${import.meta.env.BASE_URL}rss.xml`} />
     <title>{pageTitle}</title>
-<script is:inline>
-  (() => {
-    const themes = ['light', 'dark', 'tokyo-light'];
-
-    // 初期テーマは Tokyo Night Light
-    let theme = 'tokyo-light';
-
-    try {
-      const saved = localStorage.getItem('theme');
-
-      // 有効な保存済み設定があれば、そちらを優先する
-      if (themes.includes(saved)) {
-        theme = saved;
-      }
-    } catch {
-      // 保存設定を読めない場合も Tokyo Night Light を使う
-    }
-
-    document.documentElement.dataset.theme = theme;
-  })();
-</script>
+    <ClientRouter fallback="swap" />
   </head>
   <body>
+    <MosaicPond />
     <a class="skip-link" href="#content">本文へ移動</a>
     <div class="page-shell">
       <Header />
-      <main id="content" class="main-frame">
-        <slot />
-      </main>
-      <footer><span>© {new Date().getFullYear()}</span><a href={`${import.meta.env.BASE_URL}rss.xml`}>RSS</a></footer>
+      <div class="reading-panel" role="region" aria-label="本文エリア" tabindex="0" data-pond-ui>
+        <main id="content" class="main-frame" tabindex="-1">
+          <slot />
+        </main>
+        <footer><span>© {new Date().getFullYear()}</span><a href={`${import.meta.env.BASE_URL}rss.xml`}>RSS</a></footer>
+      </div>
     </div>
   </body>
 </html>

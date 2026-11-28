@@ -18,6 +18,9 @@ export default defineConfig({
   base,
   output: 'static',
   trailingSlash: 'always',
+  redirects: {
+    '/about': `${base.replace(/\/+$/, '')}/`,
+  },
   integrations: [sitemap()],
   markdown: {
     remarkPlugins: [remarkMath, remarkAlerts],

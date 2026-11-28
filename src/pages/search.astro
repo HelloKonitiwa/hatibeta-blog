@@ -33,40 +33,43 @@ const searchData = posts.map((post) => ({
 </BaseLayout>
 
 <script>
-  const form = document.querySelector<HTMLFormElement>('.search-form');
-  const input = document.querySelector<HTMLInputElement>('#search-input');
-  const results = document.querySelector<HTMLOListElement>('#search-results');
-  const count = document.querySelector<HTMLElement>('#result-count');
-  const source = document.querySelector<HTMLScriptElement>('#search-data');
-  const data = JSON.parse(source?.textContent || '[]');
+  // ClientRouterで検索へ戻ったときも、新しいフォームへ接続する。
+  document.addEventListener('astro:page-load', () => {
+    const form = document.querySelector<HTMLFormElement>('.search-form');
+    const input = document.querySelector<HTMLInputElement>('#search-input');
+    const results = document.querySelector<HTMLOListElement>('#search-results');
+    const count = document.querySelector<HTMLElement>('#result-count');
+    const source = document.querySelector<HTMLScriptElement>('#search-data');
+    const data = JSON.parse(source?.textContent || '[]');
 
-  function escapeHtml(value: string) {
-    return value.replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char] || char);
-  }
+    function escapeHtml(value: string) {
+      return value.replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char] || char);
+    }
 
-  function runSearch(query: string) {
-    const terms = query.trim().toLocaleLowerCase('ja').split(/\s+/).filter(Boolean);
-    const matched = terms.length ? data.filter((post: any) => {
-      const haystack = `${post.title} ${post.tags.join(' ')} ${post.body}`.toLocaleLowerCase('ja');
-      return terms.every((term) => haystack.includes(term));
-    }) : [];
-    if (count) count.textContent = terms.length ? `${matched.length}件の記事が見つかりました。` : '検索語を入力してください。';
-    if (results) results.innerHTML = matched.map((post: any) => `
-      <li>
-        <a class="post-title" href="${escapeHtml(post.url)}">${escapeHtml(post.title)}</a>
-        <p>${escapeHtml(post.description)}</p>
-        <div class="post-meta">${escapeHtml(new Date(post.date).toLocaleDateString('ja-JP'))} / ${post.tags.map((tag: string) => `#${escapeHtml(tag)}`).join(' ')}</div>
-      </li>`).join('');
-  }
+    function runSearch(query: string) {
+      const terms = query.trim().toLocaleLowerCase('ja').split(/\s+/).filter(Boolean);
+      const matched = terms.length ? data.filter((post: any) => {
+        const haystack = `${post.title} ${post.tags.join(' ')} ${post.body}`.toLocaleLowerCase('ja');
+        return terms.every((term) => haystack.includes(term));
+      }) : [];
+      if (count) count.textContent = terms.length ? `${matched.length}件の記事が見つかりました。` : '検索語を入力してください。';
+      if (results) results.innerHTML = matched.map((post: any) => `
+        <li>
+          <a class="post-title" href="${escapeHtml(post.url)}">${escapeHtml(post.title)}</a>
+          <p>${escapeHtml(post.description)}</p>
+          <div class="post-meta">${escapeHtml(new Date(post.date).toLocaleDateString('ja-JP'))} / ${post.tags.map((tag: string) => `#${escapeHtml(tag)}`).join(' ')}</div>
+        </li>`).join('');
+    }
 
-  const initial = new URLSearchParams(location.search).get('q') || '';
-  if (input) input.value = initial;
-  runSearch(initial);
-  form?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const query = input?.value || '';
-    history.replaceState(null, '', query ? `?q=${encodeURIComponent(query)}` : location.pathname);
-    runSearch(query);
+    const initial = new URLSearchParams(location.search).get('q') || '';
+    if (input) input.value = initial;
+    runSearch(initial);
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const query = input?.value || '';
+      history.replaceState(history.state, '', query ? `?q=${encodeURIComponent(query)}` : location.pathname);
+      runSearch(query);
+    });
   });
 </script>
 

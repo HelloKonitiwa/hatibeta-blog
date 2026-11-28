@@ -1,0 +1,15 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { isVisible, sortPosts } from '../../utils/blog';
+
+const posts = sortPosts((await getCollection('blog')).filter(isVisible));
+---
+
+<BaseLayout title="Blogs">
+  <section class="section-heading">
+    <h1>記事一覧</h1>
+  </section>
+  <PostList posts={posts} />
+</BaseLayout>

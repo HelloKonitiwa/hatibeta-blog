@@ -17,6 +17,8 @@
   --title-text: #f7f7f2;
 
   --content-width: 720px;
+  --panel-opacity: 88%;
+  --page-gap: clamp(12px, 3vh, 30px);
   --article-font-size: 18px;
   --article-line-height: 2;
 }
@@ -70,12 +72,15 @@
 }
 
 html {
+  height: 100%;
+  overflow: hidden;
   background: var(--bg);
-  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
+  height: 100%;
+  overflow: hidden;
   background: var(--bg);
   color: var(--text);
   font-family:
@@ -121,12 +126,82 @@ input {
 }
 
 .page-shell {
-  width: min(100% - 20px, 720px);
-  margin: 30px auto 32px;
+  position: fixed;
+  inset: var(--page-gap) 0;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 24px;
+  width: min(100% - 48px, var(--content-width));
+  margin-inline: auto;
+  /* 空いている部分では背後の池へ入力を通す。 */
+  pointer-events: none;
+}
+
+.pond {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.pond__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.site-header,
+.reading-panel {
+  pointer-events: auto;
+}
+
+.pond-species {
+  max-width: 120px;
+  padding: 4px 22px 4px 8px;
+  border: 1px solid var(--soft-line);
+  border-radius: 4px;
+  appearance: none;
+  color: var(--text);
+  font: inherit;
+  font-size: .875rem;
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m3 4 3 3 3-3' fill='none' stroke='%23343b58' stroke-width='1.5'/%3E%3C/svg%3E") right 6px center / 12px no-repeat;
 }
 
 .site-header {
-  margin-bottom: 42px;
+  min-width: 0;
+  padding: 16px 24px;
+  background: color-mix(in srgb, var(--bg) var(--panel-opacity), transparent);
+}
+
+.reading-panel {
+  min-height: 0;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  scroll-padding-block: 24px;
+  scrollbar-width: none;
+  background: color-mix(in srgb, var(--bg) var(--panel-opacity), transparent);
+}
+
+.reading-panel::-webkit-scrollbar {
+  display: none;
+}
+
+.page-shell:has(.home-intro) .reading-panel {
+  align-self: start;
+  max-height: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+.reading-panel:focus-visible {
+  outline-offset: -2px;
 }
 
 /* サイトタイトル */
@@ -146,6 +221,7 @@ input {
 
 .header-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -213,14 +289,28 @@ input {
 }
 
 .main-frame {
-  border: 1px solid var(--line);
-  background: var(--bg);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  border: 0;
+  background: transparent;
+}
+
+.main-frame:focus {
+  outline: none;
+}
+
+.main-frame [id] {
+  scroll-margin-block: 24px;
 }
 
 .section-heading,
 .simple-page {
   padding: 42px 48px 30px;
   border-bottom: 0;
+}
+
+.home-intro {
+  min-height: 0;
 }
 
 .section-heading h1,
@@ -614,7 +704,7 @@ footer {
   display: flex;
   justify-content: center;
   gap: 24px;
-  padding: 36px 0 0;
+  padding: 24px 24px 28px;
   color: var(--muted);
   font: .75rem/1.5 ui-monospace, monospace;
 }
@@ -642,8 +732,12 @@ footer a {
   }
 
   .page-shell {
-    width: min(100% - 24px, 980px);
-    margin-top: 24px;
+    width: min(100% - 24px, var(--content-width));
+    gap: 16px;
+  }
+
+  .site-header {
+    padding: 12px;
   }
 
   .header-row {
@@ -703,7 +797,7 @@ footer a {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
+  .reading-panel {
     scroll-behavior: auto;
   }
 }
