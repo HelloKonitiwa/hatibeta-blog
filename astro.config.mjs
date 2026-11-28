@@ -3,6 +3,7 @@ import sitemap from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkAlerts from './src/plugins/remark-alerts.mjs';
+import rehypeFootnoteTitle from './src/plugins/rehype-footnote-title.mjs';
 
 const site =
   process.env.SITE_URL ||
@@ -20,7 +21,7 @@ export default defineConfig({
   integrations: [sitemap()],
   markdown: {
     remarkPlugins: [remarkMath, remarkAlerts],
-    rehypePlugins: [rehypeKatex],
+    rehypePlugins: [rehypeKatex, rehypeFootnoteTitle],
     shikiConfig: {
       themes: {
         light: 'github-light',

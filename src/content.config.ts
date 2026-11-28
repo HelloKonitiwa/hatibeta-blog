@@ -7,6 +7,7 @@ const blog = defineCollection({
   schema: z.object({
     title: z.string().min(1),
     description: z.string().optional(),
+    footnoteTitle: z.string().trim().min(1).optional(),
     publishedAt: z.coerce.date(),
     tags: z.array(z.string().refine((tag) => tag in TAGS, {
       message: 'タグが src/data/tags.ts に登録されていません。',

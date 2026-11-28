@@ -5,6 +5,7 @@ publishedAt: 2026-08-29
 tags:
   - 日記
 draft: true
+footnoteTitle: "脚注"
 ---
 
 `npm run dev` では一覧と記事ページを確認できますが、公開用の `npm run build` からは除外されます。

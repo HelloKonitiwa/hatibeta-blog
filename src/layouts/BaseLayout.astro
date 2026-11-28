@@ -25,22 +25,18 @@ const pageTitle = title ? `${title} — ${siteName}` : siteName;
   (() => {
     const themes = ['light', 'dark', 'tokyo-light'];
 
-    // 保存された設定がなければ、OSの設定に合わせる
-    const preferred = matchMedia('(prefers-color-scheme: dark)')
-      .matches
-      ? 'dark'
-      : 'light';
-
-    let theme = preferred;
+    // 初期テーマは Tokyo Night Light
+    let theme = 'tokyo-light';
 
     try {
       const saved = localStorage.getItem('theme');
 
+      // 有効な保存済み設定があれば、そちらを優先する
       if (themes.includes(saved)) {
         theme = saved;
       }
     } catch {
-      // 保存設定を読めない場合は、OSの設定を使う
+      // 保存設定を読めない場合も Tokyo Night Light を使う
     }
 
     document.documentElement.dataset.theme = theme;

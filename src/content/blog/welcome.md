@@ -5,6 +5,7 @@ publishedAt: 2026-08-30
 tags:
 - 日記
 draft: true
+footnoteTitle: "脚注"
 ---
 
 これは、ブログの外観と機能、本文の読みやすさを確認するための記事です。
